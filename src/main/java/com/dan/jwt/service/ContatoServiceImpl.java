@@ -20,9 +20,9 @@ public class ContatoServiceImpl implements ContatoService {
     }
 
     @Override
-    public List<Contato> findAll() {
+    public List<Contato> findAll(String username) {
         
-        return contatoRepository.findAll();
+        return contatoRepository.findAllContact(username);
     }
 
     @Override
