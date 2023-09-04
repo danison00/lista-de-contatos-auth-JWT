@@ -7,5 +7,5 @@ import com.dan.jwt.domain.User;
 
 public interface UserRepository extends JpaRepository<User, Long>{
 
-    UserDetails findByEmail(String email);
+    UserDetails findByUsername(String username);
 }
