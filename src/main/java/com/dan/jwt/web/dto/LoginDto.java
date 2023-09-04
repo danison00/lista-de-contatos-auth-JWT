@@ -1,5 +1,5 @@
 package com.dan.jwt.web.dto;
 
-public record LoginDto(String email, String senha) {
+public record LoginDto(String username, String password) {
     
 }
