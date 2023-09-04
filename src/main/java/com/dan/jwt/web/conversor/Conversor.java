@@ -4,17 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.dan.jwt.domain.Contato;
-import com.dan.jwt.web.dto.ContatoDto;
+import com.dan.jwt.web.dto.ContatoRequestDto;
+import com.dan.jwt.web.dto.ContatoResponseDto;
 
 /**
  * Conversor
  */
 public interface Conversor {
 
-    Contato dtoToContact(ContatoDto contatoDto);
+    Contato dtoToContact(ContatoRequestDto contatoDto, String username);
 
-    ContatoDto contactToDto(Contato contato);
+    ContatoResponseDto contactToDto(Contato contato);
 
-    ArrayList<ContatoDto> contactToDto(List<Contato> contatos);
+    ArrayList<ContatoResponseDto> contactToDto(List<Contato> contatos);
     
 }

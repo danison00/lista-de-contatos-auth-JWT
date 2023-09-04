@@ -3,34 +3,44 @@ package com.dan.jwt.web.conversor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.dan.jwt.domain.Contato;
-import com.dan.jwt.web.dto.ContatoDto;
+import com.dan.jwt.domain.User;
+import com.dan.jwt.repository.UserRepository;
+import com.dan.jwt.web.dto.ContatoRequestDto;
+import com.dan.jwt.web.dto.ContatoResponseDto;
 
 @Component
 public class ConversorImpl implements Conversor {
+
+    @Autowired
+    private UserRepository repository;
     
     @Override
-    public Contato dtoToContact(ContatoDto contatoDto){
+    public Contato dtoToContact(ContatoRequestDto contatoDto, String username){
 
-        return new Contato(contatoDto.getId(), contatoDto.getNome(), contatoDto.getNumero(), contatoDto.getEmail());
+        User user = (User)repository.findByUsername(username);
 
-    }
-
-    @Override
-    public ContatoDto contactToDto(Contato contato) {
-
-        return new ContatoDto(contato.getId(), contato.getNome(), contato.getNumero(), contato.getEmail());
+        return new Contato(contatoDto.getId(), contatoDto.getNome(), contatoDto.getNumero(), contatoDto.getEmail(), user);
 
     }
 
     @Override
-    public ArrayList<ContatoDto> contactToDto(List<Contato> contatos) {
+    public ContatoResponseDto contactToDto(Contato contato) {
 
-        var contactsDto = new ArrayList<ContatoDto>();
+        return new ContatoResponseDto(contato.getId(), contato.getNome(), contato.getNumero(), contato.getEmail());
 
-        contatos.forEach(contact -> contactsDto.add(new ContatoDto(
+    }
+
+    @Override
+    public ArrayList<ContatoResponseDto> contactToDto(List<Contato> contatos) {
+
+        var contactsDto = new ArrayList<ContatoResponseDto>();
+
+        contatos.forEach(contact -> contactsDto.add(new ContatoResponseDto(
                 contact.getId(),
                 contact.getNome(),
                 contact.getNumero(),
