@@ -3,15 +3,20 @@ package com.dan.jwt.domain;
 import java.util.Collection;
 import java.util.List;
 
+import javax.management.relation.Role;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -25,16 +30,28 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String email;
+    @Column(unique=true)
+    private String username;
 
     private String password;
 
-    private Roles roles;
+    private Roles role;
+
+    @OneToMany(mappedBy = "user")
+    private List<Contato> contatos;
+
+  
+
+    public User(String username, String password, Roles role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
        
-        return List.of(new SimpleGrantedAuthority(roles.USER.getRole()));
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
 
     }
 
@@ -45,7 +62,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-       return email;
+       return username;
     }
 
     @Override
