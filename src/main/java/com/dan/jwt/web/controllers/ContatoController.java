@@ -2,11 +2,14 @@ package com.dan.jwt.web.controllers;
 
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.dan.jwt.service.ContatoService;
 import com.dan.jwt.web.conversor.Conversor;
-import com.dan.jwt.web.dto.ContatoDto;
+import com.dan.jwt.web.dto.ContatoRequestDto;
+import com.dan.jwt.web.dto.ContatoResponseDto;
 
 import jakarta.validation.Valid;
 
@@ -22,17 +25,22 @@ public class ContatoController {
     private Conversor conversor;
 
     @GetMapping
-    public ResponseEntity<?> findAll(){
+    public ResponseEntity<?> findAll(Authentication authentication){
 
-        ArrayList<ContatoDto> contatos = conversor.contactToDto(contatoService.findAll());
+        String username = ((UserDetails)authentication.getPrincipal()).getUsername();
+
+
+        ArrayList<ContatoResponseDto> contatos = conversor.contactToDto(contatoService.findAll(username));
 
         return ResponseEntity.ok().body(contatos);        
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody @Valid ContatoDto contato){
+    public ResponseEntity<?> save(@RequestBody @Valid ContatoRequestDto contato, Authentication authentication){
+        
+        String username = ((UserDetails)authentication.getPrincipal()).getUsername();
 
-        contatoService.save(conversor.dtoToContact(contato));
+        contatoService.save(conversor.dtoToContact(contato, username));
         
         return ResponseEntity.ok().build();
     }
@@ -46,9 +54,11 @@ public class ContatoController {
     }
 
     @PutMapping
-    public ResponseEntity<?> edit(@RequestBody ContatoDto contato){
+    public ResponseEntity<?> edit(@RequestBody ContatoRequestDto contato, Authentication authentication){
 
-        contatoService.edit(conversor.dtoToContact(contato));
+        String username = ((UserDetails)authentication.getPrincipal()).getUsername();
+
+        contatoService.edit(conversor.dtoToContact(contato, username));
 
         return ResponseEntity.ok().build();
     }
